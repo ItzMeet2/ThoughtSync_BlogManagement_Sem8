@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE payara-web-app PUBLIC "-//Payara.fish//DTD Payara Server 4 Servlet 3.0//EN" "https://raw.githubusercontent.com/payara/Payara/master/appserver/deployment/dtds/payara-web-app_4_0_1.dtd">
+<payara-web-app>
+    <context-root>/BlogManagement</context-root>
+    <resource-ref>
+        <res-ref-name>java:app/BlogDS</res-ref-name>
+        <jndi-name>java:app/BlogDS</jndi-name>
+    </resource-ref>
+</payara-web-app>
