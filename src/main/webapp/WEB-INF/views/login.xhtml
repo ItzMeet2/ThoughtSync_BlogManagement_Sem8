@@ -1,11 +1,9 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib uri="jakarta.tags.core" prefix="c" %>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:c="jakarta.tags.core">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register – ThoughtForge</title>
+    <title>Login – ThoughtForge</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css?v=1.1">
@@ -16,58 +14,46 @@
         <a href="${pageContext.request.contextPath}/" class="nav-brand">✍️ ThoughtForge</a>
         <ul>
             <li><a href="${pageContext.request.contextPath}/">Home</a></li>
-            <li><a href="${pageContext.request.contextPath}/login">Login</a></li>
+            <li><a href="${pageContext.request.contextPath}/register" class="nav-register">Register</a></li>
         </ul>
     </nav>
 </header>
 
 <div class="auth-page">
     <div class="auth-card">
-        <h2>Create Account</h2>
-        <p class="auth-sub">Join ThoughtForge and start sharing your ideas</p>
+        <h2>Welcome Back</h2>
+        <p class="auth-sub">Sign in to continue to ThoughtForge</p>
 
         <c:if test="${not empty error}">
             <div class="alert alert-error">⚠️ ${error}</div>
         </c:if>
+        <c:if test="${not empty success}">
+            <div class="alert alert-success">✅ ${success}</div>
+        </c:if>
 
-        <form action="${pageContext.request.contextPath}/register" method="post" autocomplete="on">
+        <form method="post" action="${pageContext.request.contextPath}/login" autocomplete="on">
             <div class="form-group">
-                <label for="fullName">Full Name</label>
-                <input type="text" id="fullName" name="fullName"
-                       placeholder="Your full name"
-                       value="${param.fullName}"
-                       autocomplete="name" required>
-            </div>
-            <div class="form-group">
-                <label for="username">Username</label>
+                <label for="username">Username or Email</label>
                 <input type="text" id="username" name="username"
-                       placeholder="Choose a unique username"
+                       placeholder="Enter your username or email"
                        value="${param.username}"
                        autocomplete="username" required>
-            </div>
-            <div class="form-group">
-                <label for="email">Email Address</label>
-                <input type="email" id="email" name="email"
-                       placeholder="your@email.com"
-                       value="${param.email}"
-                       autocomplete="email" required>
             </div>
             <div class="form-group">
                 <label for="password">Password</label>
                 <div class="password-wrapper">
                     <input type="password" id="password" name="password"
-                           placeholder="Create a strong password"
-                           autocomplete="new-password"
-                           minlength="6" required>
+                           placeholder="Enter your password"
+                           autocomplete="current-password" required>
                     <button type="button" class="password-toggle" onclick="togglePassword('password', this)">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="eye-icon"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg>
                     </button>
                 </div>
             </div>
-            <button type="submit" class="btn">Create Account →</button>
+            <button type="submit" class="btn">Sign In →</button>
         </form>
 
-        <script>
+        <script>//<![CDATA[
             function togglePassword(inputId, btn) {
                 const input = document.getElementById(inputId);
                 if (input.type === 'password') {
@@ -78,9 +64,9 @@
                     btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="eye-icon"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg>';
                 }
             }
-        </script>
+        //]]></script>
 
-        <div class="auth-divider">or sign up with</div>
+        <div class="auth-divider">or continue with</div>
 
         <a href="${pageContext.request.contextPath}/login/google" class="btn btn-google">
             <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google">
@@ -88,7 +74,7 @@
         </a>
 
         <div class="auth-footer">
-            Already have an account? <a href="${pageContext.request.contextPath}/login">Sign in →</a>
+            Don't have an account? <a href="${pageContext.request.contextPath}/register">Create one free →</a>
         </div>
     </div>
 </div>

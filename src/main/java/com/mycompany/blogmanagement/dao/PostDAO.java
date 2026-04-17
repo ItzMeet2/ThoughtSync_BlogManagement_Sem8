@@ -87,6 +87,34 @@ public class PostDAO {
         }
     }
 
+    public List<Post> searchWithFilters(String keyword, Integer categoryId, Integer tagId, String sortBy) {
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            StringBuilder jpql = new StringBuilder("SELECT DISTINCT p FROM Post p");
+            if (tagId != null) jpql.append(" JOIN p.tags t");
+            jpql.append(" WHERE p.status = :status");
+            if (keyword != null && !keyword.isBlank())
+                jpql.append(" AND (LOWER(p.title) LIKE LOWER(:kw) OR LOWER(p.content) LIKE LOWER(:kw))");
+            if (categoryId != null)
+                jpql.append(" AND p.category.categoryId = :catId");
+            if (tagId != null)
+                jpql.append(" AND t.tagId = :tagId");
+            jpql.append(switch (sortBy != null ? sortBy : "") {
+                case "oldest"  -> " ORDER BY p.publishedAt ASC";
+                case "popular" -> " ORDER BY p.viewCount DESC";
+                case "liked"   -> " ORDER BY p.likeCount DESC";
+                default        -> " ORDER BY p.publishedAt DESC";
+            });
+            var query = em.createQuery(jpql.toString(), Post.class).setParameter("status", "published");
+            if (keyword != null && !keyword.isBlank()) query.setParameter("kw", "%" + keyword + "%");
+            if (categoryId != null) query.setParameter("catId", categoryId);
+            if (tagId != null) query.setParameter("tagId", tagId);
+            return query.getResultList();
+        } finally {
+            em.close();
+        }
+    }
+
     public List<Post> findMostViewed(int limit) {
         EntityManager em = JPAUtil.getEntityManager();
         try {

@@ -1,17 +1,12 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib uri="jakarta.tags.core" prefix="c" %>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${post != null ? 'Edit Post' : 'Write a Story'} – ThoughtForge</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css?v=1.1">
-</head>
-<body>
-    <jsp:include page="../includes/header.jsp"/>
+<ui:composition template="/WEB-INF/includes/layout.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="jakarta.faces.facelets"
+    xmlns:c="jakarta.tags.core"
+    xmlns:f="jakarta.faces.core"
+    xmlns:h="jakarta.faces.html"
+    xmlns:fn="jakarta.tags.functions">
+<ui:define name="title">${post != null ? 'Edit Post' : 'Write a Story'} – ThoughtForge</ui:define>
+<ui:define name="content">
 
     <div class="container" style="padding-top: 40px; padding-bottom: 60px;">
         <div class="page-header" style="border-bottom: none; margin-bottom: 20px;">
@@ -94,6 +89,5 @@
         </div>
     </div>
 
-    <jsp:include page="../includes/footer.jsp"/>
-</body>
-</html>
+</ui:define>
+</ui:composition>

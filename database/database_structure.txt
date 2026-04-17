@@ -1,0 +1,144 @@
+================================================================================
+                    BLOG MANAGEMENT SYSTEM DATABASE STRUCTURE
+================================================================================
+
+PROJECT INTRODUCTION
+--------------------
+This database supports a robust Blog and Content Management System built using 
+Enterprise Java and PostgreSQL. The application is designed to handle multiple
+user roles (Admin, Author, Reader) and allows for the creation, categorization,
+and tagging of blog posts. It features a complete engagement system including
+comments, post ratings, and likes. Furthermore, it includes media management
+for file uploads and comprehensive indexes to optimize full-text search and 
+analytics retrieval.
+
+DATABASE DETAILS
+----------------
+Database Name : blogdb
+Database Type : PostgreSQL
+
+--------------------------------------------------------------------------------
+1. roles
+--------------------------------------------------------------------------------
+Description: Stores the different roles a user can bear (e.g., ADMIN, AUTHOR, READER).
+Columns:
+- role_id    : SERIAL PRIMARY KEY
+- role_name  : VARCHAR(50) UNIQUE NOT NULL
+
+--------------------------------------------------------------------------------
+2. users
+--------------------------------------------------------------------------------
+Description: Stores application users and their basic details.
+Columns:
+- user_id    : SERIAL PRIMARY KEY
+- username   : VARCHAR(50) UNIQUE NOT NULL
+- email      : VARCHAR(100) UNIQUE NOT NULL
+- password   : VARCHAR(255) NOT NULL
+- full_name  : VARCHAR(100)
+- role_id    : INTEGER (Foreign Key referencing roles.role_id)
+- created_at : TIMESTAMP (Default: CURRENT_TIMESTAMP)
+- is_active  : BOOLEAN (Default: TRUE)
+
+--------------------------------------------------------------------------------
+3. categories
+--------------------------------------------------------------------------------
+Description: Contains topic categories for the blog posts.
+Columns:
+- category_id   : SERIAL PRIMARY KEY
+- category_name : VARCHAR(100) UNIQUE NOT NULL
+- description   : TEXT
+- created_at    : TIMESTAMP (Default: CURRENT_TIMESTAMP)
+
+--------------------------------------------------------------------------------
+4. posts
+--------------------------------------------------------------------------------
+Description: Main content table storing the blog posts.
+Columns:
+- post_id        : SERIAL PRIMARY KEY
+- title          : VARCHAR(255) NOT NULL
+- content        : TEXT NOT NULL
+- author_id      : INTEGER (Foreign Key referencing users.user_id ON DELETE CASCADE)
+- category_id    : INTEGER (Foreign Key referencing categories.category_id ON DELETE SET NULL)
+- featured_image : VARCHAR(255)
+- status         : VARCHAR(20) (Default: 'draft')
+- view_count     : INTEGER (Default: 0)
+- like_count     : INTEGER (Default: 0)
+- created_at     : TIMESTAMP (Default: CURRENT_TIMESTAMP)
+- updated_at     : TIMESTAMP (Default: CURRENT_TIMESTAMP)
+- published_at   : TIMESTAMP
+
+--------------------------------------------------------------------------------
+5. tags
+--------------------------------------------------------------------------------
+Description: Stores tags that can be attached to posts.
+Columns:
+- tag_id     : SERIAL PRIMARY KEY
+- tag_name   : VARCHAR(50) UNIQUE NOT NULL
+
+--------------------------------------------------------------------------------
+6. post_tags (Junction Table)
+--------------------------------------------------------------------------------
+Description: Many-to-many relationship table joining posts and tags.
+Columns:
+- post_id    : INTEGER (Foreign Key referencing posts.post_id ON DELETE CASCADE)
+- tag_id     : INTEGER (Foreign Key referencing tags.tag_id ON DELETE CASCADE)
+- PRIMARY KEY (post_id, tag_id)
+
+--------------------------------------------------------------------------------
+7. comments
+--------------------------------------------------------------------------------
+Description: Stores user comments on posts. Includes self-referencing for replies.
+Columns:
+- comment_id        : SERIAL PRIMARY KEY
+- post_id           : INTEGER (Foreign Key referencing posts.post_id ON DELETE CASCADE)
+- user_id           : INTEGER (Foreign Key referencing users.user_id ON DELETE CASCADE)
+- parent_comment_id : INTEGER (Foreign Key referencing comments.comment_id ON DELETE CASCADE)
+- content           : TEXT NOT NULL
+- status            : VARCHAR(20) (Default: 'pending')
+- created_at        : TIMESTAMP (Default: CURRENT_TIMESTAMP)
+
+--------------------------------------------------------------------------------
+8. post_likes
+--------------------------------------------------------------------------------
+Description: Tracks which user liked which post.
+Columns:
+- like_id    : SERIAL PRIMARY KEY
+- post_id    : INTEGER (Foreign Key referencing posts.post_id ON DELETE CASCADE)
+- user_id    : INTEGER (Foreign Key referencing users.user_id ON DELETE CASCADE)
+- created_at : TIMESTAMP (Default: CURRENT_TIMESTAMP)
+- Note: UNIQUE constraint on (post_id, user_id) to prevent duplicate likes.
+
+--------------------------------------------------------------------------------
+9. post_ratings
+--------------------------------------------------------------------------------
+Description: Stores 1-5 star ratings given by users to posts.
+Columns:
+- rating_id  : SERIAL PRIMARY KEY
+- post_id    : INTEGER (Foreign Key referencing posts.post_id ON DELETE CASCADE)
+- user_id    : INTEGER (Foreign Key referencing users.user_id ON DELETE CASCADE)
+- rating     : INTEGER (Constraint: CHECK rating >= 1 AND rating <= 5)
+- created_at : TIMESTAMP (Default: CURRENT_TIMESTAMP)
+- Note: UNIQUE constraint on (post_id, user_id).
+
+--------------------------------------------------------------------------------
+10. media
+--------------------------------------------------------------------------------
+Description: Stores metadata for user-uploaded files/images.
+Columns:
+- media_id   : SERIAL PRIMARY KEY
+- file_name  : VARCHAR(255) NOT NULL
+- file_path  : VARCHAR(500) NOT NULL
+- file_type  : VARCHAR(50)
+- file_size  : BIGINT
+- uploaded_by: INTEGER (Foreign Key referencing users.user_id ON DELETE SET NULL)
+- created_at : TIMESTAMP (Default: CURRENT_TIMESTAMP)
+
+================================================================================
+INDEXES CREATED FOR PERFORMANCE
+================================================================================
+- posts      : Indexes on author_id, category_id, status, view_count, like_count.
+- comments   : Index on post_id.
+- users      : Index on username.
+- post_likes : Index on user_id.
+- post_ratings: Index on post_id.
+- FULL TEXT SEARCH : Indexes on posts(title) and posts(content) using GIN.

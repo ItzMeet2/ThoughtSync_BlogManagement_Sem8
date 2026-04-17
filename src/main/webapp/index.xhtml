@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:h="jakarta.faces.html" xmlns:f="jakarta.faces.core">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,9 +11,9 @@
     <nav class="container">
         <h1>Blog CMS</h1>
         <ul>
-            <li><a href="<%= request.getContextPath() %>/">Home</a></li>
-            <li><a href="<%= request.getContextPath() %>/post/">Blog</a></li>
-            <li><a href="<%= request.getContextPath() %>/login">Login</a></li>
+            <li><a href="#{request.contextPath}/">Home</a></li>
+            <li><a href="#{request.contextPath}/post/">Blog</a></li>
+            <li><a href="#{request.contextPath}/login">Login</a></li>
         </ul>
     </nav>
 </header>
@@ -24,8 +24,8 @@
             A modern content management system for bloggers and content creators
         </p>
         <div style="display: flex; gap: 20px; justify-content: center;">
-            <a href="<%= request.getContextPath() %>/post/" class="btn" style="font-size: 1.1rem;">View Blog Posts</a>
-            <a href="<%= request.getContextPath() %>/login" class="btn btn-success" style="font-size: 1.1rem;">Get Started</a>
+            <a href="#{request.contextPath}/post/" class="btn" style="font-size: 1.1rem;">View Blog Posts</a>
+            <a href="#{request.contextPath}/login" class="btn btn-success" style="font-size: 1.1rem;">Get Started</a>
         </div>
     </div>
     
