@@ -7,61 +7,33 @@
     xmlns:fn="jakarta.tags.functions">
 <ui:define name="content">
 <style>
-  .search-filter-bar {
-    background: var(--card-bg, #fff);
-    border-radius: 12px;
-    padding: 20px 24px;
-    margin-bottom: 28px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
-  }
-  .search-filter-bar form {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    align-items: flex-end;
-  }
+  .search-filter-bar { background: var(--card-bg, #fff); border-radius: 12px; padding: 20px 24px; margin-bottom: 28px; box-shadow: 0 2px 8px rgba(0,0,0,0.07); }
+  .search-filter-bar form { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; }
   .filter-group { display: flex; flex-direction: column; gap: 4px; }
   .filter-group label { font-size: 0.78rem; font-weight: 600; color: #666; text-transform: uppercase; letter-spacing: .04em; }
-  .filter-group input,
-  .filter-group select {
-    padding: 8px 12px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    font-size: 0.95rem;
-    background: #fafafa;
-    min-width: 160px;
-  }
-  .filter-group input:focus,
-  .filter-group select:focus { outline: none; border-color: #6c63ff; background: #fff; }
+  .filter-group input, .filter-group select { padding: 8px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 0.95rem; background: #fafafa; min-width: 160px; }
+  .filter-group input:focus, .filter-group select:focus { outline: none; border-color: #6c63ff; background: #fff; }
   .search-filter-bar .btn { align-self: flex-end; }
   .filter-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
-  .filter-tag {
-    background: #f0eeff;
-    color: #6c63ff;
-    border-radius: 20px;
-    padding: 4px 14px;
-    font-size: 0.85rem;
-    font-weight: 500;
-  }
+  .filter-tag { background: #f0eeff; color: #6c63ff; border-radius: 20px; padding: 4px 14px; font-size: 0.85rem; font-weight: 500; }
   .filter-tag a { color: #999; margin-left: 6px; text-decoration: none; }
   .results-count { color: #888; font-size: 0.9rem; margin-bottom: 16px; }
 </style>
 
 <h2>Blog Posts</h2>
 
-<!-- Search & Filter Bar -->
 <div class="search-filter-bar">
-  <form method="get" action="${pageContext.request.contextPath}/search">
+  <form method="get" action="#{request.contextPath}/search">
     <div class="filter-group">
       <label for="q">Search</label>
-      <input type="text" id="q" name="q" placeholder="Keywords…" value="${keyword}">
+      <input type="text" id="q" name="q" placeholder="Keywords…" value="#{keyword}" />
     </div>
     <div class="filter-group">
       <label for="category">Category</label>
       <select id="category" name="category">
         <option value="">All Categories</option>
-        <c:forEach var="cat" items="${categories}">
-          <option value="${cat.categoryId}" ${categoryId == cat.categoryId ? 'selected' : ''}>${cat.categoryName}</option>
+        <c:forEach var="cat" items="#{categories}">
+          <option value="#{cat.categoryId}" #{categoryId == cat.categoryId ? 'selected' : ''}>#{cat.categoryName}</option>
         </c:forEach>
       </select>
     </div>
@@ -69,80 +41,78 @@
       <label for="tag">Tag</label>
       <select id="tag" name="tag">
         <option value="">All Tags</option>
-        <c:forEach var="t" items="${tags}">
-          <option value="${t.tagId}" ${tagId == t.tagId ? 'selected' : ''}>${t.tagName}</option>
+        <c:forEach var="t" items="#{tags}">
+          <option value="#{t.tagId}" #{tagId == t.tagId ? 'selected' : ''}>#{t.tagName}</option>
         </c:forEach>
       </select>
     </div>
     <div class="filter-group">
       <label for="sort">Sort By</label>
       <select id="sort" name="sort">
-        <option value="newest"  ${sortBy == 'newest'  || empty sortBy ? 'selected' : ''}>Newest</option>
-        <option value="oldest"  ${sortBy == 'oldest'  ? 'selected' : ''}>Oldest</option>
-        <option value="popular" ${sortBy == 'popular' ? 'selected' : ''}>Most Viewed</option>
-        <option value="liked"   ${sortBy == 'liked'   ? 'selected' : ''}>Most Liked</option>
+        <option value="newest"  #{sortBy == 'newest'  or empty sortBy ? 'selected' : ''}>Newest</option>
+        <option value="oldest"  #{sortBy == 'oldest'  ? 'selected' : ''}>Oldest</option>
+        <option value="popular" #{sortBy == 'popular' ? 'selected' : ''}>Most Viewed</option>
+        <option value="liked"   #{sortBy == 'liked'   ? 'selected' : ''}>Most Liked</option>
       </select>
     </div>
     <button type="submit" class="btn">Filter</button>
-    <a href="${pageContext.request.contextPath}/search" class="btn btn-outline">Reset</a>
+    <a href="#{request.contextPath}/search" class="btn btn-outline">Reset</a>
   </form>
 </div>
 
-<!-- Active filter tags -->
 <div class="filter-tags">
-  <c:if test="${not empty keyword}">
-    <span class="filter-tag">🔍 "${keyword}" <a href="${pageContext.request.contextPath}/search?category=${categoryId}&tag=${tagId}&sort=${sortBy}">✕</a></span>
+  <c:if test="#{not empty keyword}">
+    <span class="filter-tag">🔍 "#{keyword}" <a href="#{request.contextPath}/search?category=#{categoryId}&amp;tag=#{tagId}&amp;sort=#{sortBy}">✕</a></span>
   </c:if>
-  <c:if test="${not empty categoryId}">
-    <c:forEach var="cat" items="${categories}">
-      <c:if test="${cat.categoryId == categoryId}">
-        <span class="filter-tag">📂 ${cat.categoryName} <a href="${pageContext.request.contextPath}/search?q=${keyword}&tag=${tagId}&sort=${sortBy}">✕</a></span>
+  <c:if test="#{not empty categoryId}">
+    <c:forEach var="cat" items="#{categories}">
+      <c:if test="#{cat.categoryId == categoryId}">
+        <span class="filter-tag">📂 #{cat.categoryName} <a href="#{request.contextPath}/search?q=#{keyword}&amp;tag=#{tagId}&amp;sort=#{sortBy}">✕</a></span>
       </c:if>
     </c:forEach>
   </c:if>
-  <c:if test="${not empty tagId}">
-    <c:forEach var="t" items="${tags}">
-      <c:if test="${t.tagId == tagId}">
-        <span class="filter-tag">🏷️ ${t.tagName} <a href="${pageContext.request.contextPath}/search?q=${keyword}&category=${categoryId}&sort=${sortBy}">✕</a></span>
+  <c:if test="#{not empty tagId}">
+    <c:forEach var="t" items="#{tags}">
+      <c:if test="#{t.tagId == tagId}">
+        <span class="filter-tag">🏷️ #{t.tagName} <a href="#{request.contextPath}/search?q=#{keyword}&amp;category=#{categoryId}&amp;sort=#{sortBy}">✕</a></span>
       </c:if>
     </c:forEach>
   </c:if>
 </div>
 
-<p class="results-count">${posts.size()} post(s) found</p>
+<p class="results-count">#{posts.size()} post(s) found</p>
 
-<c:forEach var="post" items="${posts}">
+<c:forEach var="post" items="#{posts}">
   <div class="card post-card">
-    <h2><a href="${pageContext.request.contextPath}/post/${post.postId}" style="color: #2c3e50; text-decoration: none;">${post.title}</a></h2>
+    <h2><a href="#{request.contextPath}/post/#{post.postId}" style="color: #2c3e50; text-decoration: none;">#{post.title}</a></h2>
     <div class="post-meta">
-      <span>By ${post.author.fullName}</span> |
-      <span>${post.publishedAt}</span>
-      <c:if test="${post.category != null}">
-        | <span>${post.category.categoryName}</span>
+      <span>By #{post.author.fullName}</span> |
+      <span>#{post.publishedAt}</span>
+      <c:if test="#{post.category != null}">
+        | <span>#{post.category.categoryName}</span>
       </c:if>
-      | <span>👁 ${post.viewCount}</span>
-      | <span>❤️ ${post.likeCount}</span>
+      | <span>👁 #{post.viewCount}</span>
+      | <span>❤️ #{post.likeCount}</span>
     </div>
-    <c:if test="${not empty post.tags}">
+    <c:if test="#{not empty post.tags}">
       <div style="margin: 6px 0;">
-        <c:forEach var="t" items="${post.tags}">
-          <a href="${pageContext.request.contextPath}/search?tag=${t.tagId}" style="display:inline-block;background:#f0eeff;color:#6c63ff;border-radius:20px;padding:2px 10px;font-size:0.8rem;margin-right:4px;text-decoration:none;">#${t.tagName}</a>
+        <c:forEach var="t" items="#{post.tags}">
+          <a href="#{request.contextPath}/search?tag=#{t.tagId}" style="display:inline-block;background:#f0eeff;color:#6c63ff;border-radius:20px;padding:2px 10px;font-size:0.8rem;margin-right:4px;text-decoration:none;">##{t.tagName}</a>
         </c:forEach>
       </div>
     </c:if>
     <div class="post-content">
-      ${post.content.length() > 200 ? post.content.substring(0, 200).concat('...') : post.content}
+      #{fn:length(post.content) > 200 ? fn:substring(post.content, 0, 200).concat('...') : post.content}
     </div>
-    <a href="${pageContext.request.contextPath}/post/${post.postId}" class="btn">Read More</a>
+    <a href="#{request.contextPath}/post/#{post.postId}" class="btn">Read More</a>
   </div>
 </c:forEach>
 
-<c:if test="${empty posts}">
+<c:if test="#{empty posts}">
   <div class="card">
     <p>No posts found matching your filters.</p>
   </div>
 </c:if>
-
 
 </ui:define>
 </ui:composition>
