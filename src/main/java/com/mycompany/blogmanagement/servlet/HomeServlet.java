@@ -25,6 +25,6 @@ public class HomeServlet extends HttpServlet {
         request.setAttribute("popularPosts", popularPosts);
         request.setAttribute("categories",   categories);
 
-        request.getRequestDispatcher("/faces/WEB-INF/views/home.xhtml").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/views/home.xhtml").forward(request, response);
     }
 }

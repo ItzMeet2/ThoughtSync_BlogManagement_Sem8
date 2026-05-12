@@ -14,23 +14,23 @@ public class LoginServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.getRequestDispatcher("/faces/WEB-INF/views/login.xhtml").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/views/login.xhtml").forward(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
             String identifier = request.getParameter("username");
-            String password = request.getParameter("password");
+            String password   = request.getParameter("password");
 
             User user = userDAO.findByUsernameOrEmail(identifier);
 
             if (user != null && user.getIsActive() && PasswordUtil.verifyPassword(password, user.getPassword())) {
                 HttpSession session = request.getSession();
-                session.setAttribute("user", user);
-                session.setAttribute("userId", user.getUserId());
+                session.setAttribute("user",     user);
+                session.setAttribute("userId",   user.getUserId());
                 session.setAttribute("username", user.getUsername());
-                session.setAttribute("role", user.getRole().getRoleName());
+                session.setAttribute("role",     user.getRole().getRoleName());
 
                 if ("ADMIN".equals(user.getRole().getRoleName())) {
                     response.sendRedirect(request.getContextPath() + "/admin");
@@ -39,12 +39,12 @@ public class LoginServlet extends HttpServlet {
                 }
             } else {
                 request.setAttribute("error", "Invalid username or password");
-                request.getRequestDispatcher("/faces/WEB-INF/views/login.xhtml").forward(request, response);
+                request.getRequestDispatcher("/WEB-INF/views/login.xhtml").forward(request, response);
             }
         } catch (Exception e) {
             e.printStackTrace();
             request.setAttribute("error", "An error occurred during login. Please try again.");
-            request.getRequestDispatcher("/faces/WEB-INF/views/login.xhtml").forward(request, response);
+            request.getRequestDispatcher("/WEB-INF/views/login.xhtml").forward(request, response);
         }
     }
 }

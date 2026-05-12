@@ -17,16 +17,12 @@ public class AdminServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(false);
         if (session == null || session.getAttribute("user") == null) {
-            response.sendRedirect(request.getContextPath() + "/login");
-            return;
+            response.sendRedirect(request.getContextPath() + "/login"); return;
         }
-
         User user = (User) session.getAttribute("user");
         if (!"ADMIN".equals(user.getRole().getRoleName())) {
-            response.sendError(HttpServletResponse.SC_FORBIDDEN);
-            return;
+            response.sendError(HttpServletResponse.SC_FORBIDDEN); return;
         }
-
         ReportDAO reportDAO = new ReportDAO();
         request.setAttribute("totalPosts",        postDAO.getTotalPosts());
         request.setAttribute("publishedPosts",     postDAO.getPublishedCount());
@@ -37,43 +33,33 @@ public class AdminServlet extends HttpServlet {
         request.setAttribute("recentPosts",        postDAO.findAll());
         request.setAttribute("allUsers",           userDAO.findAll());
         request.setAttribute("allCategories",      categoryDAO.findAll());
-
-        request.getRequestDispatcher("/faces/WEB-INF/views/admin-dashboard.xhtml").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/views/admin-dashboard.xhtml").forward(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(false);
         if (session == null || session.getAttribute("user") == null) {
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
-            return;
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED); return;
         }
-
         User user = (User) session.getAttribute("user");
         if (!"ADMIN".equals(user.getRole().getRoleName())) {
-            response.sendError(HttpServletResponse.SC_FORBIDDEN);
-            return;
+            response.sendError(HttpServletResponse.SC_FORBIDDEN); return;
         }
-
         String action = request.getParameter("action");
         try {
             if ("deletePost".equals(action)) {
                 postDAO.delete(Integer.parseInt(request.getParameter("postId")));
             } else if ("deleteUser".equals(action)) {
-                int userId = Integer.parseInt(request.getParameter("userId"));
-                if (userId == user.getUserId()) {
-                    session.setAttribute("error", "You cannot delete your own admin account.");
-                } else {
-                    userDAO.delete(userId);
-                }
+                int uid = Integer.parseInt(request.getParameter("userId"));
+                if (uid != user.getUserId()) userDAO.delete(uid);
+                else session.setAttribute("error", "You cannot delete your own account.");
             } else if ("deleteCategory".equals(action)) {
                 categoryDAO.delete(Integer.parseInt(request.getParameter("categoryId")));
             }
         } catch (Exception e) {
-            session.setAttribute("error", "Error performing deletion: " + e.getMessage());
-            e.printStackTrace();
+            session.setAttribute("error", "Error: " + e.getMessage());
         }
-
         response.sendRedirect(request.getContextPath() + "/admin");
     }
 }

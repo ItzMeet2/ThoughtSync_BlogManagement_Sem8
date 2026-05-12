@@ -26,84 +26,61 @@ public class PostServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String pathInfo = request.getPathInfo();
-        if (pathInfo == null || pathInfo.equals("/")) {
-            listPosts(request, response);
-        } else if (pathInfo.equals("/new")) {
-            showNewForm(request, response);
-        } else if (pathInfo.equals("/edit")) {
-            showEditForm(request, response);
-        } else {
-            viewPost(request, response, pathInfo);
-        }
+        if (pathInfo == null || pathInfo.equals("/"))  { listPosts(request, response); }
+        else if (pathInfo.equals("/new"))              { showNewForm(request, response); }
+        else if (pathInfo.equals("/edit"))             { showEditForm(request, response); }
+        else                                           { viewPost(request, response, pathInfo); }
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("action");
-        if ("create".equals(action)) {
-            createPost(request, response);
-        } else if ("update".equals(action)) {
-            updatePost(request, response);
-        } else if ("delete".equals(action)) {
-            deletePost(request, response);
-        } else if ("publish".equals(action) || "unpublish".equals(action)) {
-            publishPost(request, response);
-        }
+        if ("create".equals(action))                                    createPost(request, response);
+        else if ("update".equals(action))                               updatePost(request, response);
+        else if ("delete".equals(action))                               deletePost(request, response);
+        else if ("publish".equals(action) || "unpublish".equals(action)) publishPost(request, response);
     }
 
     private void listPosts(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setAttribute("posts", postDAO.findPublished());
-        request.getRequestDispatcher("/faces/WEB-INF/views/blog-list.xhtml").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/views/blog-list.xhtml").forward(request, response);
     }
 
     private void viewPost(HttpServletRequest request, HttpServletResponse response, String pathInfo) throws ServletException, IOException {
         String postIdStr = pathInfo.substring(1);
-        if (!ValidationUtil.isValidInteger(postIdStr)) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid post ID");
-            return;
-        }
+        if (!ValidationUtil.isValidInteger(postIdStr)) { response.sendError(HttpServletResponse.SC_BAD_REQUEST); return; }
         try {
             int postId = Integer.parseInt(postIdStr);
             Post post = postDAO.findById(postId);
             if (post != null) {
                 postDAO.incrementViewCount(postId);
-                post = postDAO.findById(postId);
-                request.setAttribute("post", post);
+                request.setAttribute("post", postDAO.findById(postId));
                 request.setAttribute("comments", new CommentDAO().findByPost(postId));
-                request.getRequestDispatcher("/faces/WEB-INF/views/post-view.xhtml").forward(request, response);
+                request.getRequestDispatcher("/WEB-INF/views/post-view.xhtml").forward(request, response);
             } else {
                 response.sendError(HttpServletResponse.SC_NOT_FOUND);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error loading post: " + e.getMessage());
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
 
     private void showNewForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(false);
-        if (session == null || session.getAttribute("user") == null) {
-            response.sendRedirect(request.getContextPath() + "/login");
-            return;
-        }
+        if (session == null || session.getAttribute("user") == null) { response.sendRedirect(request.getContextPath() + "/login"); return; }
         request.setAttribute("categories", categoryDAO.findAll());
-        request.getRequestDispatcher("/faces/WEB-INF/views/post-form.xhtml").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/views/post-form.xhtml").forward(request, response);
     }
 
     private void showEditForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(false);
-        if (session == null || session.getAttribute("user") == null) {
-            response.sendRedirect(request.getContextPath() + "/login");
-            return;
-        }
+        if (session == null || session.getAttribute("user") == null) { response.sendRedirect(request.getContextPath() + "/login"); return; }
         String postIdStr = request.getParameter("id");
-        if (!ValidationUtil.isValidInteger(postIdStr)) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid post ID");
-            return;
-        }
+        if (!ValidationUtil.isValidInteger(postIdStr)) { response.sendError(HttpServletResponse.SC_BAD_REQUEST); return; }
         request.setAttribute("post", postDAO.findById(Integer.parseInt(postIdStr)));
         request.setAttribute("categories", categoryDAO.findAll());
-        request.getRequestDispatcher("/faces/WEB-INF/views/post-form.xhtml").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/views/post-form.xhtml").forward(request, response);
     }
 
     private String processImageUpload(HttpServletRequest request) throws IOException, ServletException {
@@ -113,8 +90,7 @@ public class PostServlet extends HttpServlet {
             String ext = fileName.substring(fileName.lastIndexOf("."));
             String uniqueFileName = UUID.randomUUID().toString() + ext;
             String uploadDir = getServletContext().getRealPath("/uploads/posts");
-            File dir = new File(uploadDir);
-            if (!dir.exists()) dir.mkdirs();
+            new File(uploadDir).mkdirs();
             try (InputStream in = filePart.getInputStream()) {
                 Files.copy(in, Paths.get(uploadDir + File.separator + uniqueFileName), StandardCopyOption.REPLACE_EXISTING);
             }
@@ -129,10 +105,8 @@ public class PostServlet extends HttpServlet {
         post.setTitle(request.getParameter("title"));
         post.setContent(request.getParameter("content"));
         post.setAuthor(user);
-        String categoryId = request.getParameter("categoryId");
-        if (categoryId != null && !categoryId.isEmpty()) {
-            post.setCategory(categoryDAO.findById(Integer.parseInt(categoryId)));
-        }
+        String catId = request.getParameter("categoryId");
+        if (catId != null && !catId.isEmpty()) post.setCategory(categoryDAO.findById(Integer.parseInt(catId)));
         String img = processImageUpload(request);
         if (img != null) post.setFeaturedImage(img);
         postDAO.save(post);
@@ -144,10 +118,8 @@ public class PostServlet extends HttpServlet {
         post.setTitle(request.getParameter("title"));
         post.setContent(request.getParameter("content"));
         post.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
-        String categoryId = request.getParameter("categoryId");
-        if (categoryId != null && !categoryId.isEmpty()) {
-            post.setCategory(categoryDAO.findById(Integer.parseInt(categoryId)));
-        }
+        String catId = request.getParameter("categoryId");
+        if (catId != null && !catId.isEmpty()) post.setCategory(categoryDAO.findById(Integer.parseInt(catId)));
         String img = processImageUpload(request);
         if (img != null) post.setFeaturedImage(img);
         postDAO.update(post);

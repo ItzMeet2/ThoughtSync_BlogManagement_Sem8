@@ -9,7 +9,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -19,7 +18,6 @@ import java.util.UUID;
 @WebServlet("/profile")
 @MultipartConfig(fileSizeThreshold = 1024 * 1024 * 2, maxFileSize = 1024 * 1024 * 20, maxRequestSize = 1024 * 1024 * 30)
 public class ProfileServlet extends HttpServlet {
-
     private final UserDAO userDAO = new UserDAO();
     private final PostDAO postDAO = new PostDAO();
     private final PostLikeDAO postLikeDAO = new PostLikeDAO();
@@ -28,11 +26,7 @@ public class ProfileServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
         User sessionUser = (User) session.getAttribute("user");
-
-        if (sessionUser == null) {
-            response.sendRedirect(request.getContextPath() + "/login");
-            return;
-        }
+        if (sessionUser == null) { response.sendRedirect(request.getContextPath() + "/login"); return; }
 
         User user = userDAO.findById(sessionUser.getUserId());
         session.setAttribute("user", user);
@@ -50,22 +44,16 @@ public class ProfileServlet extends HttpServlet {
             request.setAttribute("errorMessage", session.getAttribute("errorMessage"));
             session.removeAttribute("errorMessage");
         }
-
-        request.getRequestDispatcher("/faces/WEB-INF/views/profile.xhtml").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/views/profile.xhtml").forward(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
         User sessionUser = (User) session.getAttribute("user");
-
-        if (sessionUser == null) {
-            response.sendRedirect(request.getContextPath() + "/login");
-            return;
-        }
+        if (sessionUser == null) { response.sendRedirect(request.getContextPath() + "/login"); return; }
 
         User user = userDAO.findById(sessionUser.getUserId());
-
         try {
             if ("updateProfile".equals(request.getParameter("action"))) {
                 user.setFullName(request.getParameter("fullName"));
@@ -76,19 +64,14 @@ public class ProfileServlet extends HttpServlet {
                     String ext = filePart.getSubmittedFileName();
                     ext = ext.substring(ext.lastIndexOf("."));
                     String uniqueFileName = UUID.randomUUID().toString() + ext;
-
                     String uploadDir = getServletContext().getRealPath("/uploads/avatars");
-                    File dir = new File(uploadDir);
-                    if (!dir.exists()) dir.mkdirs();
-
+                    new File(uploadDir).mkdirs();
                     try (java.io.InputStream in = filePart.getInputStream()) {
-                        java.nio.file.Files.copy(in,
-                            Paths.get(uploadDir + File.separator + uniqueFileName),
+                        java.nio.file.Files.copy(in, Paths.get(uploadDir + File.separator + uniqueFileName),
                             java.nio.file.StandardCopyOption.REPLACE_EXISTING);
                     }
                     user.setProfilePicture("uploads/avatars/" + uniqueFileName);
                 }
-
                 userDAO.update(user);
                 session.setAttribute("user", user);
                 session.setAttribute("successMessage", "Profile updated successfully!");
@@ -97,7 +80,6 @@ public class ProfileServlet extends HttpServlet {
             e.printStackTrace();
             session.setAttribute("errorMessage", "An error occurred: " + e.getMessage());
         }
-
         response.sendRedirect(request.getContextPath() + "/profile");
     }
 }

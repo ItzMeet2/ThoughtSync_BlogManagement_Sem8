@@ -20,13 +20,10 @@ public class DashboardServlet extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/login");
             return;
         }
-
-        User user = (User) session.getAttribute("user");
+        User user  = (User) session.getAttribute("user");
         String role = (String) session.getAttribute("role");
-
         List<Post> posts = "ADMIN".equals(role) ? postDAO.findAll() : postDAO.findByAuthor(user.getUserId());
-
         request.setAttribute("posts", posts);
-        request.getRequestDispatcher("/faces/WEB-INF/views/dashboard.xhtml").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/views/dashboard.xhtml").forward(request, response);
     }
 }

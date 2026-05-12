@@ -4,7 +4,6 @@
    xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd"
    version="6.0">
 
-    <!-- JSF Configuration -->
     <context-param>
         <param-name>jakarta.faces.PROJECT_STAGE</param-name>
         <param-value>Development</param-value>
@@ -20,13 +19,11 @@
         <load-on-startup>1</load-on-startup>
     </servlet>
 
-    <!-- Map FacesServlet to *.xhtml so direct .xhtml access works -->
     <servlet-mapping>
         <servlet-name>FacesServlet</servlet-name>
         <url-pattern>*.xhtml</url-pattern>
     </servlet-mapping>
 
-    <!-- Map FacesServlet to /faces/* so servlet forwards to WEB-INF views work -->
     <servlet-mapping>
         <servlet-name>FacesServlet</servlet-name>
         <url-pattern>/faces/*</url-pattern>
