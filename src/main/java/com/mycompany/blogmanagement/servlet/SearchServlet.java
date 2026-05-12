@@ -18,10 +18,10 @@ public class SearchServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String keyword    = request.getParameter("q");
-        String catParam   = request.getParameter("category");
-        String tagParam   = request.getParameter("tag");
-        String sortBy     = request.getParameter("sort");
+        String keyword  = request.getParameter("q");
+        String catParam = request.getParameter("category");
+        String tagParam = request.getParameter("tag");
+        String sortBy   = request.getParameter("sort");
 
         Integer categoryId = (catParam != null && !catParam.isEmpty()) ? Integer.parseInt(catParam) : null;
         Integer tagId      = (tagParam != null && !tagParam.isEmpty())  ? Integer.parseInt(tagParam)  : null;
@@ -36,6 +36,6 @@ public class SearchServlet extends HttpServlet {
         request.setAttribute("categories", categoryDAO.findAll());
         request.setAttribute("tags",       tagDAO.findAll());
 
-        request.getRequestDispatcher("/WEB-INF/views/blog-list.jsp").forward(request, response);
+        request.getRequestDispatcher("/faces/WEB-INF/views/blog-list.xhtml").forward(request, response);
     }
 }

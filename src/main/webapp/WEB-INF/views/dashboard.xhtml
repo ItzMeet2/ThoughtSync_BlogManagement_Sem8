@@ -5,7 +5,7 @@
     xmlns:f="jakarta.faces.core"
     xmlns:h="jakarta.faces.html"
     xmlns:fn="jakarta.tags.functions">
-<ui:define name="title">My Dashboard – ThoughtForge</ui:define>
+<ui:define name="title">My Dashboard – ThoughtSync</ui:define>
 <ui:define name="content">
 
     <div class="container" style="padding-top: 40px; padding-bottom: 60px;">
@@ -37,7 +37,7 @@
                                     </span>
                                 </div>
                                 <p class="post-excerpt" style="margin-bottom: 24px;">
-                                    <c:out value="#{fn:length(post.content) > 120 ? fn:substring(post.content, 0, 120) : post.content}"/>...
+                                    <h:outputText value="#{fn:length(post.content) > 120 ? fn:substring(post.content, 0, 120) : post.content}"/>...
                                 </p>
                                 <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: auto; padding-top: 16px; border-top: 1px solid var(--border-color);">
                                     <a href="#{request.contextPath}/post/#{post.postId}" class="btn btn-outline btn-sm">View</a>

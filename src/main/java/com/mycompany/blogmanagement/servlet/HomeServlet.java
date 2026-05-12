@@ -10,21 +10,21 @@ import jakarta.servlet.http.*;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet("")
+@WebServlet({"", "/"})
 public class HomeServlet extends HttpServlet {
     private PostDAO postDAO = new PostDAO();
     private CategoryDAO categoryDAO = new CategoryDAO();
-    
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        List<Post> recentPosts = postDAO.findPublished();
+        List<Post> recentPosts  = postDAO.findPublished();
         List<Post> popularPosts = postDAO.findMostViewed(5);
         List<Category> categories = categoryDAO.findAll();
-        
-        request.setAttribute("recentPosts", recentPosts);
+
+        request.setAttribute("recentPosts",  recentPosts);
         request.setAttribute("popularPosts", popularPosts);
-        request.setAttribute("categories", categories);
-        
-        request.getRequestDispatcher("/WEB-INF/views/home.jsp").forward(request, response);
+        request.setAttribute("categories",   categories);
+
+        request.getRequestDispatcher("/faces/WEB-INF/views/home.xhtml").forward(request, response);
     }
 }

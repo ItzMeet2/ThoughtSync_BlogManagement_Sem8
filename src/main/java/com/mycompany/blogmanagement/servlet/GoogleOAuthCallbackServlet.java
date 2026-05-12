@@ -36,7 +36,7 @@ public class GoogleOAuthCallbackServlet extends HttpServlet {
 
         if (error != null || code == null) {
             request.setAttribute("error", "Google login failed or was cancelled.");
-            request.getRequestDispatcher("/WEB-INF/views/login.jsp").forward(request, response);
+            request.getRequestDispatcher("/WEB-INF/views/login.xhtml").forward(request, response);
             return;
         }
 
@@ -91,13 +91,13 @@ public class GoogleOAuthCallbackServlet extends HttpServlet {
                 response.sendRedirect(request.getContextPath() + "/dashboard");
             } else {
                 request.setAttribute("error", "Account is disabled.");
-                request.getRequestDispatcher("/WEB-INF/views/login.jsp").forward(request, response);
+                request.getRequestDispatcher("/WEB-INF/views/login.xhtml").forward(request, response);
             }
 
         } catch (Exception e) {
             e.printStackTrace();
             request.setAttribute("error", "An error occurred during Google authentication.");
-            request.getRequestDispatcher("/WEB-INF/views/login.jsp").forward(request, response);
+            request.getRequestDispatcher("/WEB-INF/views/login.xhtml").forward(request, response);
         }
     }
 

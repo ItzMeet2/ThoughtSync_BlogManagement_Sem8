@@ -47,7 +47,7 @@
                                 <span class="post-meta-item">❤️ #{post.likeCount}</span>
                             </div>
                             <p class="post-excerpt">
-                                <c:out value="#{fn:length(post.content) > 150 ? fn:substring(post.content, 0, 150) : post.content}"/>...
+                                <h:outputText value="#{fn:length(post.content) > 150 ? fn:substring(post.content, 0, 150) : post.content}"/>...
                             </p>
                             <a href="#{request.contextPath}/post/#{post.postId}" class="read-more">Read More →</a>
                         </div>
@@ -64,7 +64,7 @@
                     <a href="#{request.contextPath}/post/new" class="btn" style="margin-top:16px;">✍️ Write a Post</a>
                 </c:if>
                 <c:if test="#{empty sessionScope.user}">
-                    <a href="#{request.contextPath}/register" class="btn" style="margin-top:16px;">Join ThoughtForge</a>
+                    <a href="#{request.contextPath}/register" class="btn" style="margin-top:16px;">Join ThoughtSync</a>
                 </c:if>
             </div>
         </c:otherwise>
@@ -95,7 +95,7 @@
                                 <span>👁 #{post.viewCount} views</span>
                             </div>
                             <p class="post-excerpt">
-                                <c:out value="#{fn:length(post.content) > 180 ? fn:substring(post.content, 0, 180) : post.content}"/>...
+                                <h:outputText value="#{fn:length(post.content) > 180 ? fn:substring(post.content, 0, 180) : post.content}"/>...
                             </p>
                             <a href="#{request.contextPath}/post/#{post.postId}" class="read-more">Read More →</a>
                         </div>

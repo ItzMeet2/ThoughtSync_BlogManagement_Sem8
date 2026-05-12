@@ -15,11 +15,8 @@
             <property name="jakarta.persistence.schema-generation.database.action" value="none"/>
             <property name="eclipselink.logging.level" value="WARNING"/>
             <property name="eclipselink.target-database" value="PostgreSQL"/>
-            <!-- Explicit connection properties as fallback to prevent H2 in-memory DB generation -->
-            <property name="jakarta.persistence.jdbc.driver" value="org.postgresql.Driver"/>
-            <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/blogdb"/>
-            <property name="jakarta.persistence.jdbc.user" value="postgres"/>
-            <property name="jakarta.persistence.jdbc.password" value="zoro"/>
+            <!-- Connection properties managed via Payara JDBC resource (payara-resources.xml) -->
+            <!-- Do NOT store credentials here in source code -->
         </properties>
     </persistence-unit>
 </persistence>

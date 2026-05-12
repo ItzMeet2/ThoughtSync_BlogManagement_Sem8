@@ -3,13 +3,13 @@
     xmlns:ui="jakarta.faces.facelets"
     xmlns:c="jakarta.tags.core"
     xmlns:h="jakarta.faces.html">
-<ui:define name="title">Register – ThoughtForge</ui:define>
+<ui:define name="title">Register – ThoughtSync</ui:define>
 <ui:define name="content">
 
 <div class="auth-page">
     <div class="auth-card">
         <h2>Create Account</h2>
-        <p class="auth-sub">Join ThoughtForge and start sharing your ideas</p>
+        <p class="auth-sub">Join ThoughtSync and start sharing your ideas</p>
 
         <c:if test="#{not empty requestScope.error}">
             <div class="alert alert-error">⚠️ #{requestScope.error}</div>

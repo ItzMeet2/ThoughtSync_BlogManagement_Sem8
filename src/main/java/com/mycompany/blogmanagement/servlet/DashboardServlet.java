@@ -12,7 +12,7 @@ import java.util.List;
 @WebServlet("/dashboard")
 public class DashboardServlet extends HttpServlet {
     private PostDAO postDAO = new PostDAO();
-    
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(false);
@@ -20,18 +20,13 @@ public class DashboardServlet extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/login");
             return;
         }
-        
+
         User user = (User) session.getAttribute("user");
         String role = (String) session.getAttribute("role");
-        
-        List<Post> posts;
-        if ("ADMIN".equals(role)) {
-            posts = postDAO.findAll();
-        } else {
-            posts = postDAO.findByAuthor(user.getUserId());
-        }
-        
+
+        List<Post> posts = "ADMIN".equals(role) ? postDAO.findAll() : postDAO.findByAuthor(user.getUserId());
+
         request.setAttribute("posts", posts);
-        request.getRequestDispatcher("/WEB-INF/views/dashboard.jsp").forward(request, response);
+        request.getRequestDispatcher("/faces/WEB-INF/views/dashboard.xhtml").forward(request, response);
     }
 }
