@@ -37,6 +37,96 @@
             </a>
         </div>
 
+        <!-- Analytics Charts -->
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 24px; margin-bottom: 30px;">
+            <div class="card" style="padding: 24px; display: flex; flex-direction: column; align-items: center;">
+                <h3 style="font-size: 1.15rem; color: #fff; margin-bottom: 20px; align-self: flex-start;">📂 Category Share</h3>
+                <div style="width: 100%; max-width: 300px; height: 300px; position: relative;">
+                    <canvas id="categoryChart"></canvas>
+                </div>
+            </div>
+            <div class="card" style="padding: 24px; display: flex; flex-direction: column;">
+                <h3 style="font-size: 1.15rem; color: #fff; margin-bottom: 20px;">🔥 Top Viewed Stories</h3>
+                <div style="width: 100%; height: 300px; position: relative;">
+                    <canvas id="viewsChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <script>//<![CDATA[
+        document.addEventListener('DOMContentLoaded', function() {
+            const catLabels = #{catLabelsJson != null ? catLabelsJson : '[]'};
+            const catCounts = #{catCountsJson != null ? catCountsJson : '[]'};
+            const viewLabels = #{viewLabelsJson != null ? viewLabelsJson : '[]'};
+            const viewCounts = #{viewCountsJson != null ? viewCountsJson : '[]'};
+
+            // 1. Category Chart
+            const catCtx = document.getElementById('categoryChart').getContext('2d');
+            new Chart(catCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: catLabels,
+                    datasets: [{
+                        data: catCounts,
+                        backgroundColor: [
+                            '#6366f1', '#a855f7', '#10b981', '#f59e0b', '#ef4444', '#06b6d4'
+                        ],
+                        borderWidth: 1,
+                        borderColor: 'rgba(255, 255, 255, 0.1)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: '#94a3b8',
+                                font: { family: 'Inter', size: 11 }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // 2. Views Chart
+            const viewsCtx = document.getElementById('viewsChart').getContext('2d');
+            new Chart(viewsCtx, {
+                type: 'bar',
+                data: {
+                    labels: viewLabels,
+                    datasets: [{
+                        label: 'Views',
+                        data: viewCounts,
+                        backgroundColor: 'rgba(99, 102, 241, 0.75)',
+                        hoverBackgroundColor: '#6366f1',
+                        borderRadius: 6,
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        x: {
+                            grid: { display: false },
+                            ticks: { color: '#94a3b8', font: { family: 'Inter', size: 10 } }
+                        },
+                        y: {
+                            grid: { color: 'rgba(255, 255, 255, 0.08)' },
+                            ticks: { color: '#94a3b8', font: { family: 'Inter', size: 10 } }
+                        }
+                    }
+                }
+            });
+        });
+        //]]></script>
+
         <!-- Pending Reports -->
         <div class="card" style="padding: 0; overflow: hidden; margin-bottom: 30px; border-color: rgba(255,100,100,0.3);">
             <div style="padding: 24px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background: rgba(255,60,60,0.05);">
@@ -142,8 +232,12 @@
                                                   onsubmit="return confirm('Delete this user permanently?');">
                                                 <input type="hidden" name="action" value="deleteUser" />
                                                 <input type="hidden" name="userId" value="#{u.userId}" />
-                                                <button type="submit" class="btn btn-outline btn-sm" style="color:#ff5555; border-color:rgba(255,60,60,0.3);"
-                                                        #{u.userId == sessionScope.user.userId ? 'disabled' : ''}>🗑️</button>
+                                                <c:if test="#{u.userId == sessionScope.user.userId}">
+                                                    <button type="submit" class="btn btn-outline btn-sm" style="color:#ff5555; border-color:rgba(255,60,60,0.3);" disabled="disabled">🗑️</button>
+                                                </c:if>
+                                                <c:if test="#{u.userId != sessionScope.user.userId}">
+                                                    <button type="submit" class="btn btn-outline btn-sm" style="color:#ff5555; border-color:rgba(255,60,60,0.3);">🗑️</button>
+                                                </c:if>
                                             </form>
                                         </td>
                                     </tr>
