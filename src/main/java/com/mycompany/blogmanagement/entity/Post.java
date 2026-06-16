@@ -106,4 +106,15 @@ public class Post {
     
     public Integer getLikeCount() { return likeCount; }
     public void setLikeCount(Integer likeCount) { this.likeCount = likeCount; }
+
+    public Integer getReadingTime() {
+        if (content == null || content.trim().isEmpty()) {
+            return 1;
+        }
+        String cleanContent = content.replaceAll("<[^>]*>", " ");
+        String[] words = cleanContent.trim().split("\\s+");
+        int count = words.length;
+        int min = count / 200;
+        return min > 0 ? min : 1;
+    }
 }

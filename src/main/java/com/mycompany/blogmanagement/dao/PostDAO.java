@@ -166,4 +166,37 @@ public class PostDAO {
             em.close();
         }
     }
+
+    public List<Object[]> getCategoryDistribution() {
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            return em.createQuery("SELECT c.categoryName, COUNT(p) FROM Post p JOIN p.category c GROUP BY c.categoryName", Object[].class)
+                    .getResultList();
+        } finally {
+            em.close();
+        }
+    }
+
+    public List<Object[]> getPostViewsData(int limit) {
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            return em.createQuery("SELECT p.title, p.viewCount FROM Post p ORDER BY p.viewCount DESC", Object[].class)
+                    .setMaxResults(limit)
+                    .getResultList();
+        } finally {
+            em.close();
+        }
+    }
+
+    public List<Post> searchTitles(String keyword, int limit) {
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            return em.createQuery("SELECT p FROM Post p WHERE p.status = 'published' AND LOWER(p.title) LIKE LOWER(:keyword)", Post.class)
+                    .setParameter("keyword", "%" + keyword + "%")
+                    .setMaxResults(limit)
+                    .getResultList();
+        } finally {
+            em.close();
+        }
+    }
 }

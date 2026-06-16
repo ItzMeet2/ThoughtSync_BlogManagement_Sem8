@@ -7,6 +7,9 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 import java.io.IOException;
 
+import org.json.JSONArray;
+import java.util.List;
+
 @WebServlet("/admin")
 public class AdminServlet extends HttpServlet {
     private PostDAO postDAO = new PostDAO();
@@ -33,6 +36,33 @@ public class AdminServlet extends HttpServlet {
         request.setAttribute("recentPosts",        postDAO.findAll());
         request.setAttribute("allUsers",           userDAO.findAll());
         request.setAttribute("allCategories",      categoryDAO.findAll());
+
+        // Category Distribution Chart Data
+        List<Object[]> catDist = postDAO.getCategoryDistribution();
+        JSONArray catLabels = new JSONArray();
+        JSONArray catCounts = new JSONArray();
+        for (Object[] row : catDist) {
+            catLabels.put((String) row[0]);
+            catCounts.put((Long) row[1]);
+        }
+        request.setAttribute("catLabelsJson", catLabels.toString());
+        request.setAttribute("catCountsJson", catCounts.toString());
+
+        // Post Views Chart Data (Top 5)
+        List<Object[]> postViews = postDAO.getPostViewsData(5);
+        JSONArray viewLabels = new JSONArray();
+        JSONArray viewCounts = new JSONArray();
+        for (Object[] row : postViews) {
+            String title = (String) row[0];
+            if (title != null && title.length() > 20) {
+                title = title.substring(0, 18) + "..";
+            }
+            viewLabels.put(title);
+            viewCounts.put((Integer) row[1]);
+        }
+        request.setAttribute("viewLabelsJson", viewLabels.toString());
+        request.setAttribute("viewCountsJson", viewCounts.toString());
+
         request.getRequestDispatcher("/WEB-INF/views/admin-dashboard.xhtml").forward(request, response);
     }
 

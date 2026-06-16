@@ -10,33 +10,11 @@ import java.util.List;
 public class ReportDAO {
 
     public void save(Report report) {
-        EntityManager em = JPAUtil.getEntityManager();
-        EntityTransaction tx = em.getTransaction();
-        try {
-            tx.begin();
-            em.persist(report);
-            tx.commit();
-        } catch (Exception e) {
-            if (tx.isActive()) tx.rollback();
-            e.printStackTrace();
-        } finally {
-            em.close();
-        }
+        JPAUtil.executeInTransaction(em -> em.persist(report));
     }
 
     public void update(Report report) {
-        EntityManager em = JPAUtil.getEntityManager();
-        EntityTransaction tx = em.getTransaction();
-        try {
-            tx.begin();
-            em.merge(report);
-            tx.commit();
-        } catch (Exception e) {
-            if (tx.isActive()) tx.rollback();
-            e.printStackTrace();
-        } finally {
-            em.close();
-        }
+        JPAUtil.executeInTransaction(em -> em.merge(report));
     }
 
     public Report findById(Integer id) {
@@ -70,20 +48,11 @@ public class ReportDAO {
     }
 
     public void delete(Integer id) {
-        EntityManager em = JPAUtil.getEntityManager();
-        EntityTransaction tx = em.getTransaction();
-        try {
-            tx.begin();
+        JPAUtil.executeInTransaction(em -> {
             Report report = em.find(Report.class, id);
             if (report != null) {
                 em.remove(report);
             }
-            tx.commit();
-        } catch (Exception e) {
-            if (tx.isActive()) tx.rollback();
-            e.printStackTrace();
-        } finally {
-            em.close();
-        }
+        });
     }
 }

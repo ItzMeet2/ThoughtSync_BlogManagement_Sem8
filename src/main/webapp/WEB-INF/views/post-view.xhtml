@@ -5,7 +5,7 @@
     xmlns:f="jakarta.faces.core"
     xmlns:h="jakarta.faces.html"
     xmlns:fn="jakarta.tags.functions">
-<ui:define name="title">#{post.title} – ThoughtForge</ui:define>
+<ui:define name="title">#{post.title} – ThoughtSync</ui:define>
 <ui:define name="content">
 
     <div class="container" style="padding-top: 40px; padding-bottom: 60px; max-width: 900px;">
@@ -32,6 +32,10 @@
                             #{fn:substring(post.publishedAt != null ? post.publishedAt : post.createdAt, 0, 10)}
                             &#160;·&#160;
                             👁️ #{post.viewCount} views
+                            &#160;·&#160;
+                            ⏱️ #{post.readingTime} min read
+                            &#160;·&#160;
+                            ⭐ #{averageRating gt 0.0 ? averageRating : 'N/A'}
                         </div>
                     </div>
                 </div>
@@ -59,7 +63,7 @@
         </c:if>
 
         <article class="article-content">
-            #{post.content}
+            <h:outputText value="#{post.content}" escape="false" />
         </article>
 
         <c:if test="#{not empty sessionScope.user}">
@@ -75,9 +79,12 @@
                 </div>
                 <div style="display: flex; align-items: center; gap: 10px;">
                     <span style="color: var(--text-muted); font-size: 0.9rem;">Rate:</span>
-                    <div style="display: flex; gap: 5px;">
+                    <div class="rating-stars" style="display: flex; gap: 5px;">
                         <c:forEach var="i" begin="1" end="5">
-                            <a href="javascript:void(0)" onclick="ratePost('#{post.postId}', '#{i}')" style="text-decoration: none; font-size: 1.2rem; filter: grayscale(1); transition: 0.2s;">⭐</a>
+                            <a href="javascript:void(0)" onclick="ratePost('#{post.postId}', '#{i}')" 
+                               data-value="#{i}"
+                               class="star-btn #{not empty userRating and i le userRating ? 'active' : ''}" 
+                               style="text-decoration: none; font-size: 1.25rem; filter: #{not empty userRating and i le userRating ? 'none' : 'grayscale(1)'}; transition: 0.2s;">⭐</a>
                         </c:forEach>
                     </div>
                 </div>
@@ -92,7 +99,7 @@
                     <c:if test="#{not empty sessionScope.error}">
                         <div style="background: rgba(255,60,60,0.1); border-left: 4px solid #ff5555; padding: 15px; margin-bottom: 20px; color: #ffaaaa; border-radius: 4px;">
                             #{sessionScope.error}
-                            <c:remove var="error" scope="session"/>
+                            #{sessionScope.remove('error') != null ? '' : ''}
                         </div>
                     </c:if>
                     <form action="#{request.contextPath}/report" method="POST">
@@ -110,16 +117,31 @@
                 </div>
             </div>
 
-            <script>//<![CDATA[
-            function ratePost(postId, rating) {
-                const form = document.createElement('form');
-                form.method = 'POST';
-                form.action = '#{request.contextPath}/rate';
-                form.innerHTML = '<input type="hidden" name="postId" value="' + postId + '"><input type="hidden" name="rating" value="' + rating + '">';
-                document.body.appendChild(form);
-                form.submit();
-            }
-            //]]></script>
+             <script>//<![CDATA[
+             function ratePost(postId, rating) {
+                 const form = document.createElement('form');
+                 form.method = 'POST';
+                 form.action = '#{request.contextPath}/rate';
+                 form.innerHTML = '<input type="hidden" name="postId" value="' + postId + '"><input type="hidden" name="rating" value="' + rating + '">';
+                 document.body.appendChild(form);
+                 form.submit();
+             }
+
+             document.querySelectorAll('.star-btn').forEach(btn => {
+                 btn.addEventListener('mouseover', function() {
+                     const val = parseInt(this.getAttribute('data-value'));
+                     this.parentElement.querySelectorAll('.star-btn').forEach(s => {
+                         const sVal = parseInt(s.getAttribute('data-value'));
+                         s.style.filter = sVal <= val ? 'none' : 'grayscale(1)';
+                     });
+                 });
+                 btn.addEventListener('mouseout', function() {
+                     this.parentElement.querySelectorAll('.star-btn').forEach(s => {
+                         s.style.filter = s.classList.contains('active') ? 'none' : 'grayscale(1)';
+                     });
+                 });
+             });
+             //]]></script>
         </c:if>
 
         <div class="comment-section">

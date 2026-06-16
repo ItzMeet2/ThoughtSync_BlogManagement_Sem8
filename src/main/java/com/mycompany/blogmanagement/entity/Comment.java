@@ -33,7 +33,7 @@ public class Comment {
 
     public Comment() {
         this.createdAt = new Timestamp(System.currentTimeMillis());
-        this.status = "pending";
+        this.status = "approved";
     }
 
     public Integer getCommentId() { return commentId; }

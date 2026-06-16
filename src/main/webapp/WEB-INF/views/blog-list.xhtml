@@ -33,7 +33,7 @@
       <select id="category" name="category">
         <option value="">All Categories</option>
         <c:forEach var="cat" items="#{categories}">
-          <option value="#{cat.categoryId}" #{categoryId == cat.categoryId ? 'selected' : ''}>#{cat.categoryName}</option>
+          <option value="#{cat.categoryId}" selected="#{categoryId == cat.categoryId ? 'selected' : null}">#{cat.categoryName}</option>
         </c:forEach>
       </select>
     </div>
@@ -42,17 +42,17 @@
       <select id="tag" name="tag">
         <option value="">All Tags</option>
         <c:forEach var="t" items="#{tags}">
-          <option value="#{t.tagId}" #{tagId == t.tagId ? 'selected' : ''}>#{t.tagName}</option>
+          <option value="#{t.tagId}" selected="#{tagId == t.tagId ? 'selected' : null}">#{t.tagName}</option>
         </c:forEach>
       </select>
     </div>
     <div class="filter-group">
       <label for="sort">Sort By</label>
       <select id="sort" name="sort">
-        <option value="newest"  #{sortBy == 'newest'  or empty sortBy ? 'selected' : ''}>Newest</option>
-        <option value="oldest"  #{sortBy == 'oldest'  ? 'selected' : ''}>Oldest</option>
-        <option value="popular" #{sortBy == 'popular' ? 'selected' : ''}>Most Viewed</option>
-        <option value="liked"   #{sortBy == 'liked'   ? 'selected' : ''}>Most Liked</option>
+        <option value="newest"  selected="#{sortBy == 'newest' or empty sortBy ? 'selected' : null}">Newest</option>
+        <option value="oldest"  selected="#{sortBy == 'oldest' ? 'selected' : null}">Oldest</option>
+        <option value="popular" selected="#{sortBy == 'popular' ? 'selected' : null}">Most Viewed</option>
+        <option value="liked"   selected="#{sortBy == 'liked' ? 'selected' : null}">Most Liked</option>
       </select>
     </div>
     <button type="submit" class="btn">Filter</button>
@@ -93,6 +93,7 @@
       </c:if>
       | <span>👁 #{post.viewCount}</span>
       | <span>❤️ #{post.likeCount}</span>
+      | <span>⏱️ #{post.readingTime} min read</span>
     </div>
     <c:if test="#{not empty post.tags}">
       <div style="margin: 6px 0;">

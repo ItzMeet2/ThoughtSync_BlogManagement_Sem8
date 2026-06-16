@@ -10,6 +10,8 @@
         <class>com.mycompany.blogmanagement.entity.Tag</class>
         <class>com.mycompany.blogmanagement.entity.PostLike</class>
         <class>com.mycompany.blogmanagement.entity.Report</class>
+        <class>com.mycompany.blogmanagement.entity.PostRating</class>
+        <class>com.mycompany.blogmanagement.entity.Media</class>
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
         <properties>
             <property name="jakarta.persistence.schema-generation.database.action" value="none"/>

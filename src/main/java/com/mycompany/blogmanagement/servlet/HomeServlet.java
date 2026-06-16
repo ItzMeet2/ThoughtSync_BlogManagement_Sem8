@@ -10,7 +10,7 @@ import jakarta.servlet.http.*;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet({"", "/"})
+@WebServlet({"", "/home"})
 public class HomeServlet extends HttpServlet {
     private PostDAO postDAO = new PostDAO();
     private CategoryDAO categoryDAO = new CategoryDAO();

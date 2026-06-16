@@ -15,6 +15,12 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="crossorigin" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;family=Playfair+Display:wght@700;800&amp;display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="#{request.contextPath}/css/style.css?v=1.1" />
+    <script>//<![CDATA[
+        (function() {
+            const theme = localStorage.getItem('theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    //]]></script>
 </head>
 <body>
 <header>
@@ -23,6 +29,9 @@
         <ul>
             <li><a href="#{request.contextPath}/">Home</a></li>
             <li><a href="#{request.contextPath}/post/">Blog</a></li>
+            <li>
+                <button type="button" id="theme-toggle" class="btn-theme-toggle" style="background:none; border:none; cursor:pointer; font-size:1.2rem; padding:8px 12px; display:inline-flex; align-items:center; justify-content:center; color: var(--text-muted); transition: var(--transition);" title="Toggle light/dark theme">🌓</button>
+            </li>
             <c:choose>
                 <c:when test="#{not empty sessionScope.user}">
                     <li><a href="#{request.contextPath}/dashboard">Dashboard</a></li>
@@ -70,5 +79,90 @@
         </div>
     </div>
 </footer>
+<script>//<![CDATA[
+    document.addEventListener('DOMContentLoaded', function() {
+        // Theme Toggle Logic
+        const toggleBtn = document.getElementById('theme-toggle');
+        if (toggleBtn) {
+            toggleBtn.addEventListener('click', function() {
+                const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+            });
+        }
+
+        // Live Search Autocomplete Logic
+        const searchInputs = document.querySelectorAll('input[name="q"], .hero-search input');
+        searchInputs.forEach(input => {
+            const form = input.closest('form');
+            if (!form) return;
+            form.style.position = 'relative';
+
+            const box = document.createElement('div');
+            box.className = 'search-autocomplete-box';
+            form.appendChild(box);
+
+            let debounceTimer;
+            input.addEventListener('input', function() {
+                clearTimeout(debounceTimer);
+                const query = this.value.trim();
+                if (query.length < 2) {
+                    box.style.display = 'none';
+                    box.innerHTML = '';
+                    return;
+                }
+
+                debounceTimer = setTimeout(() => {
+                    fetch('#{request.contextPath}/search/autocomplete?q=' + encodeURIComponent(query))
+                        .then(res => res.json())
+                        .then(data => {
+                            box.innerHTML = '';
+                            if (data && data.length > 0) {
+                                data.forEach(item => {
+                                    const div = document.createElement('div');
+                                    div.className = 'search-autocomplete-item';
+
+                                    const titleSpan = document.createElement('span');
+                                    titleSpan.className = 'search-autocomplete-title';
+                                    titleSpan.textContent = item.title;
+                                    div.appendChild(titleSpan);
+
+                                    if (item.category) {
+                                        const catSpan = document.createElement('span');
+                                        catSpan.className = 'search-autocomplete-category';
+                                        catSpan.textContent = item.category;
+                                        div.appendChild(catSpan);
+                                    }
+
+                                    div.addEventListener('click', function(e) {
+                                        e.stopPropagation();
+                                        window.location.href = '#{request.contextPath}/post/' + item.id;
+                                    });
+                                    box.appendChild(div);
+                                });
+                                box.style.display = 'block';
+                            } else {
+                                box.style.display = 'none';
+                            }
+                        })
+                        .catch(err => console.error('Autocomplete error:', err));
+                }, 250);
+            });
+
+            document.addEventListener('click', function(e) {
+                if (e.target !== input && e.target !== box && !box.contains(e.target)) {
+                    box.style.display = 'none';
+                }
+            });
+
+            input.addEventListener('focus', function() {
+                if (box.children.length > 0 && this.value.trim().length >= 2) {
+                    box.style.display = 'block';
+                }
+            });
+        });
+    });
+//]]></script>
 </body>
 </html>

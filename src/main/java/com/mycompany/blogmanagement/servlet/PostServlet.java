@@ -17,7 +17,7 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.UUID;
 
-@WebServlet("/post/*")
+@WebServlet({"/post/*", "/post"})
 @MultipartConfig(fileSizeThreshold = 1024 * 1024 * 2, maxFileSize = 1024 * 1024 * 10, maxRequestSize = 1024 * 1024 * 15)
 public class PostServlet extends HttpServlet {
     private PostDAO postDAO = new PostDAO();
@@ -56,6 +56,23 @@ public class PostServlet extends HttpServlet {
                 postDAO.incrementViewCount(postId);
                 request.setAttribute("post", postDAO.findById(postId));
                 request.setAttribute("comments", new CommentDAO().findByPost(postId));
+                
+                PostRatingDAO ratingDAO = new PostRatingDAO();
+                Double avgRating = ratingDAO.getAverageRating(postId);
+                if (avgRating != null) {
+                    avgRating = Math.round(avgRating * 10.0) / 10.0;
+                }
+                request.setAttribute("averageRating", avgRating != null ? avgRating : 0.0);
+
+                HttpSession session = request.getSession(false);
+                if (session != null && session.getAttribute("user") != null) {
+                    User user = (User) session.getAttribute("user");
+                    PostRating userRating = ratingDAO.findByPostAndUser(postId, user.getUserId());
+                    if (userRating != null) {
+                        request.setAttribute("userRating", userRating.getRating());
+                    }
+                }
+
                 request.getRequestDispatcher("/WEB-INF/views/post-view.xhtml").forward(request, response);
             } else {
                 response.sendError(HttpServletResponse.SC_NOT_FOUND);
@@ -105,6 +122,8 @@ public class PostServlet extends HttpServlet {
         post.setTitle(request.getParameter("title"));
         post.setContent(request.getParameter("content"));
         post.setAuthor(user);
+        post.setStatus("published");
+        post.setPublishedAt(new Timestamp(System.currentTimeMillis()));
         String catId = request.getParameter("categoryId");
         if (catId != null && !catId.isEmpty()) post.setCategory(categoryDAO.findById(Integer.parseInt(catId)));
         String img = processImageUpload(request);
