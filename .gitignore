@@ -1,30 +1,32 @@
-# Compiled class file
+# ===========================
+# Build Output
+# ===========================
+target/
 *.class
-
-# Log file
-*.log
-
-# BlueJ files
-*.ctxt
-
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
-
-# Package Files #
-*.jar
 *.war
-*.nar
+*.jar
 *.ear
+*.nar
 *.zip
 *.tar.gz
 *.rar
 
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
-hs_err_pid*
-replay_pid*
+# ===========================
+# Secrets & Credentials
+# ===========================
+src/main/webapp/WEB-INF/payara-resources.xml
+src/main/java/com/mycompany/blogmanagement/util/OAuthConstants.java
 
+# ===========================
+# Logs
+# ===========================
+*.log
+build_log.txt
+build_log_utf8.txt
+
+# ===========================
 # Maven
-target/
+# ===========================
 pom.xml.tag
 pom.xml.releaseBackup
 pom.xml.versionsBackup
@@ -35,16 +37,18 @@ buildNumber.properties
 .mvn/timing.properties
 .mvn/wrapper/maven-wrapper.jar
 
-# IDEs
+# ===========================
+# IDE Files
+# ===========================
 .idea/
 *.iml
 .vscode/
+*.py
+nb-configuration.xml
 
-# OS generated files
+# ===========================
+# OS Files
+# ===========================
 .DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
 Thumbs.db
+ehthumbs.db
