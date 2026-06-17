@@ -119,11 +119,27 @@ public class PostServlet extends HttpServlet {
             String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
             String ext = fileName.substring(fileName.lastIndexOf("."));
             String uniqueFileName = UUID.randomUUID().toString() + ext;
+            
+            // 1. Write to deployed real path (instantly available to running server)
             String uploadDir = getServletContext().getRealPath("/uploads/posts");
-            new File(uploadDir).mkdirs();
-            try (InputStream in = filePart.getInputStream()) {
-                Files.copy(in, Paths.get(uploadDir + File.separator + uniqueFileName), StandardCopyOption.REPLACE_EXISTING);
+            if (uploadDir != null) {
+                new File(uploadDir).mkdirs();
+                try (InputStream in = filePart.getInputStream()) {
+                    Files.copy(in, Paths.get(uploadDir + File.separator + uniqueFileName), StandardCopyOption.REPLACE_EXISTING);
+                }
             }
+            
+            // 2. Write to source folder (persisted across clean compiles / redeployments)
+            String sourceDir = "e:\\Sem_8\\Project-8\\BlogManagement\\src\\main\\webapp\\uploads\\posts";
+            File sourceFolder = new File(sourceDir);
+            if (sourceFolder.exists() || sourceFolder.mkdirs()) {
+                try (InputStream in = filePart.getInputStream()) {
+                    Files.copy(in, Paths.get(sourceFolder.getAbsolutePath() + File.separator + uniqueFileName), StandardCopyOption.REPLACE_EXISTING);
+                } catch (Exception e) {
+                    System.out.println("Could not copy to source directory: " + e.getMessage());
+                }
+            }
+            
             return "uploads/posts/" + uniqueFileName;
         }
         return null;
