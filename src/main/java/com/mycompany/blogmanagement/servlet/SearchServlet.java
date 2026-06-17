@@ -36,6 +36,6 @@ public class SearchServlet extends HttpServlet {
         request.setAttribute("categories", categoryDAO.findAll());
         request.setAttribute("tags",       tagDAO.findAll());
 
-        request.getRequestDispatcher("/WEB-INF/views/blog-list.xhtml").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/views/search.xhtml").forward(request, response);
     }
 }
