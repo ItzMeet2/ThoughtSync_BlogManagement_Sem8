@@ -1326,17 +1326,3 @@ footer {
         line-height: 24px !important;
     }
 }
-
-/* Theme Toggle SVG Display */
-html[data-theme="dark"] #theme-sun {
-    display: inline-block !important;
-}
-html[data-theme="dark"] #theme-moon {
-    display: none !important;
-}
-html[data-theme="light"] #theme-sun {
-    display: none !important;
-}
-html[data-theme="light"] #theme-moon {
-    display: inline-block !important;
-}
