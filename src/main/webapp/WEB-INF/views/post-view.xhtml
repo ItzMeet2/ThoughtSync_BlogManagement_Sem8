@@ -40,8 +40,9 @@
                     </div>
                 </div>
                 <div style="margin-left: auto; display: flex; gap: 16px;">
-                    <button class="btn btn-outline btn-sm" style="border-radius: 20px; padding: 6px 16px;">
-                        ❤️ #{post.likeCount}
+                    <button class="btn btn-outline btn-sm" style="border-radius: 20px; padding: 6px 16px; display: inline-flex; align-items: center; gap: 6px; vertical-align: middle;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-heart-icon lucide-heart"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+                        #{post.likeCount}
                     </button>
                     <button class="btn btn-outline btn-sm" onclick="copyShareLink()" style="border-radius: 20px; padding: 6px 16px;">
                         ↗️ Share
@@ -71,7 +72,10 @@
                 <div style="display: flex; align-items: center; gap: 10px;">
                     <form method="post" action="#{request.contextPath}/like">
                         <input type="hidden" name="postId" value="#{post.postId}" />
-                        <button type="submit" class="like-btn">❤️ Like</button>
+                        <button type="submit" class="like-btn" style="display: inline-flex; align-items: center; gap: 8px;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-heart-icon lucide-heart"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/></svg>
+                            Like
+                        </button>
                     </form>
                     <button class="like-btn" onclick="document.getElementById('reportModal').style.display='flex'" style="background: rgba(255,60,60,0.1); color: #ff5555; border-color: rgba(255,60,60,0.3);">
                         🚩 Report Post
