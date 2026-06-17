@@ -117,4 +117,19 @@ public class Post {
         int min = count / 200;
         return min > 0 ? min : 1;
     }
+
+    public String getExcerpt() {
+        if (content == null || content.trim().isEmpty()) {
+            return "";
+        }
+        // Strip HTML tags using regex
+        String cleanContent = content.replaceAll("<[^>]*>", " ");
+        // Normalize whitespaces and trim
+        cleanContent = cleanContent.replaceAll("\\s+", " ").trim();
+        // Truncate to 150 characters
+        if (cleanContent.length() > 150) {
+            return cleanContent.substring(0, 150) + "...";
+        }
+        return cleanContent;
+    }
 }

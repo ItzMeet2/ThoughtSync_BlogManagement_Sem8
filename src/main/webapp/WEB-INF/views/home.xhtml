@@ -53,7 +53,7 @@
                                 </span>
                             </div>
                             <p class="post-excerpt">
-                                <h:outputText value="#{fn:length(post.content) > 150 ? fn:substring(post.content, 0, 150) : post.content}"/>...
+                                <h:outputText value="#{post.excerpt}"/>
                             </p>
                             <a href="#{request.contextPath}/post/#{post.postId}" class="read-more">Read More →</a>
                         </div>

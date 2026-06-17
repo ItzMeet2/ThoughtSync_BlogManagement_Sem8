@@ -135,7 +135,7 @@
             </div>
           </c:if>
           <div class="post-content">
-            #{fn:length(post.content) > 200 ? fn:substring(post.content, 0, 200).concat('...') : post.content}
+            #{post.excerpt}
           </div>
           <a href="#{request.contextPath}/post/#{post.postId}" class="btn" style="margin-top: 12px; display: inline-block;">Read More</a>
         </div>
