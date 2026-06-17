@@ -8,7 +8,7 @@ import java.util.Properties;
 public class EmailUtil {
     private static final String SMTP_HOST = System.getenv("SMTP_HOST") != null ? System.getenv("SMTP_HOST") : "smtp.gmail.com";
     private static final String SMTP_PORT = System.getenv("SMTP_PORT") != null ? System.getenv("SMTP_PORT") : "587";
-    private static final String EMAIL_USERNAME = System.getenv("EMAIL_USERNAME") != null ? System.getenv("EMAIL_USERNAME") : "meethansotiya@gmail.com";
+    private static final String EMAIL_USERNAME = System.getenv("EMAIL_USERNAME") != null ? System.getenv("EMAIL_USERNAME") : "nothinghappens.zoro@gmail.com";
     // For Gmail, this should be a 16-character App Password (not the main Google password)
     private static final String EMAIL_PASSWORD = System.getenv("EMAIL_PASSWORD") != null ? System.getenv("EMAIL_PASSWORD") : "ylqi lbbr uqha szqc";
 
