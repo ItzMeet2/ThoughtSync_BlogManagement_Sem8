@@ -1,0 +1,14 @@
+package com.mycompany.blogmanagement.util;
+
+/*
+ * TEMPLATE FILE - Copy this to EmailConstants.java and fill in your values.
+ * EmailConstants.java is gitignored and must NOT be committed.
+ */
+public class EmailConstants {
+    public static final String SMTP_HOST = "smtp.gmail.com";
+    public static final String SMTP_PORT = "587";
+    public static final String EMAIL_USERNAME = "YOUR_GMAIL_ADDRESS@gmail.com";
+    
+    // For Gmail, this should be a 16-character App Password (not the main Google password)
+    public static final String EMAIL_PASSWORD = "YOUR_GMAIL_APP_PASSWORD";
+}

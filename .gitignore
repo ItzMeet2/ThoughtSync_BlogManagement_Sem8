@@ -16,6 +16,7 @@ target/
 # ===========================
 src/main/webapp/WEB-INF/payara-resources.xml
 src/main/java/com/mycompany/blogmanagement/util/OAuthConstants.java
+src/main/java/com/mycompany/blogmanagement/util/EmailConstants.java
 
 # ===========================
 # Logs
