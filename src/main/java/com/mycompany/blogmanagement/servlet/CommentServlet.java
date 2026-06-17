@@ -54,6 +54,15 @@ public class CommentServlet extends HttpServlet {
         comment.setUser(user);
         comment.setContent(ValidationUtil.sanitizeHtml(content.trim()));
         
+        String parentIdStr = request.getParameter("parentCommentId");
+        if (parentIdStr != null && !parentIdStr.trim().isEmpty() && ValidationUtil.isValidInteger(parentIdStr)) {
+            int parentId = Integer.parseInt(parentIdStr);
+            Comment parentComment = commentDAO.findById(parentId);
+            if (parentComment != null) {
+                comment.setParentComment(parentComment);
+            }
+        }
+        
         commentDAO.save(comment);
         response.sendRedirect(request.getContextPath() + "/post/" + postId);
     }

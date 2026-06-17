@@ -22,6 +22,7 @@ import java.util.UUID;
 public class PostServlet extends HttpServlet {
     private PostDAO postDAO = new PostDAO();
     private CategoryDAO categoryDAO = new CategoryDAO();
+    private TagDAO tagDAO = new TagDAO();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -87,6 +88,7 @@ public class PostServlet extends HttpServlet {
         HttpSession session = request.getSession(false);
         if (session == null || session.getAttribute("user") == null) { response.sendRedirect(request.getContextPath() + "/login"); return; }
         request.setAttribute("categories", categoryDAO.findAll());
+        request.setAttribute("tagsString", "");
         request.getRequestDispatcher("/WEB-INF/views/post-form.xhtml").forward(request, response);
     }
 
@@ -95,8 +97,19 @@ public class PostServlet extends HttpServlet {
         if (session == null || session.getAttribute("user") == null) { response.sendRedirect(request.getContextPath() + "/login"); return; }
         String postIdStr = request.getParameter("id");
         if (!ValidationUtil.isValidInteger(postIdStr)) { response.sendError(HttpServletResponse.SC_BAD_REQUEST); return; }
-        request.setAttribute("post", postDAO.findById(Integer.parseInt(postIdStr)));
+        Post post = postDAO.findById(Integer.parseInt(postIdStr));
+        request.setAttribute("post", post);
         request.setAttribute("categories", categoryDAO.findAll());
+        
+        if (post != null && post.getTags() != null && !post.getTags().isEmpty()) {
+            String tagsStr = post.getTags().stream()
+                    .map(Tag::getTagName)
+                    .collect(java.util.stream.Collectors.joining(", "));
+            request.setAttribute("tagsString", tagsStr);
+        } else {
+            request.setAttribute("tagsString", "");
+        }
+        
         request.getRequestDispatcher("/WEB-INF/views/post-form.xhtml").forward(request, response);
     }
 
@@ -126,6 +139,25 @@ public class PostServlet extends HttpServlet {
         post.setPublishedAt(new Timestamp(System.currentTimeMillis()));
         String catId = request.getParameter("categoryId");
         if (catId != null && !catId.isEmpty()) post.setCategory(categoryDAO.findById(Integer.parseInt(catId)));
+        
+        String tagsInput = request.getParameter("tags");
+        java.util.Set<Tag> tags = new java.util.HashSet<>();
+        if (tagsInput != null && !tagsInput.trim().isEmpty()) {
+            String[] tagNames = tagsInput.split(",");
+            for (String tagName : tagNames) {
+                String cleanedName = tagName.trim();
+                if (!cleanedName.isEmpty()) {
+                    Tag tag = tagDAO.findByName(cleanedName);
+                    if (tag == null) {
+                        tag = new Tag(cleanedName);
+                        tagDAO.save(tag);
+                    }
+                    tags.add(tag);
+                }
+            }
+        }
+        post.setTags(tags);
+
         String img = processImageUpload(request);
         if (img != null) post.setFeaturedImage(img);
         postDAO.save(post);
@@ -139,6 +171,25 @@ public class PostServlet extends HttpServlet {
         post.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
         String catId = request.getParameter("categoryId");
         if (catId != null && !catId.isEmpty()) post.setCategory(categoryDAO.findById(Integer.parseInt(catId)));
+        
+        String tagsInput = request.getParameter("tags");
+        java.util.Set<Tag> tags = new java.util.HashSet<>();
+        if (tagsInput != null && !tagsInput.trim().isEmpty()) {
+            String[] tagNames = tagsInput.split(",");
+            for (String tagName : tagNames) {
+                String cleanedName = tagName.trim();
+                if (!cleanedName.isEmpty()) {
+                    Tag tag = tagDAO.findByName(cleanedName);
+                    if (tag == null) {
+                        tag = new Tag(cleanedName);
+                        tagDAO.save(tag);
+                    }
+                    tags.add(tag);
+                }
+            }
+        }
+        post.setTags(tags);
+
         String img = processImageUpload(request);
         if (img != null) post.setFeaturedImage(img);
         postDAO.update(post);

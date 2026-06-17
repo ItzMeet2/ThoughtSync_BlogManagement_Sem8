@@ -1279,3 +1279,50 @@ footer {
 [data-theme="light"] .search-autocomplete-item {
     border-bottom: 1px solid rgba(0, 0, 0, 0.03);
 }
+
+/* ── Additional Mobile Responsiveness Overrides ── */
+@media (max-width: 768px) {
+    .container {
+        padding: 15px !important;
+    }
+    .post-form-grid {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 20px !important;
+    }
+    .sidebar {
+        width: 100% !important;
+    }
+    .comment-replies {
+        margin-left: 20px !important;
+        padding-left: 12px !important;
+    }
+    .comment {
+        padding: 15px !important;
+    }
+    .article-header {
+        padding-bottom: 20px !important;
+    }
+    .article-title {
+        font-size: 1.8rem !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .comment-replies {
+        margin-left: 10px !important;
+        padding-left: 8px !important;
+    }
+    .comment-avatar {
+        width: 32px !important;
+        height: 32px !important;
+        font-size: 0.9rem !important;
+        line-height: 32px !important;
+    }
+    .comment-replies .comment-avatar {
+        width: 24px !important;
+        height: 24px !important;
+        font-size: 0.8rem !important;
+        line-height: 24px !important;
+    }
+}

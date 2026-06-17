@@ -171,20 +171,63 @@
                 <c:choose>
                     <c:when test="#{not empty comments}">
                         <c:forEach var="comment" items="#{comments}">
-                            <div class="comment">
-                                <div class="comment-header">
-                                    <div class="comment-avatar">
-                                        #{fn:substring(not empty comment.user.fullName ? comment.user.fullName : comment.user.username, 0, 1).toUpperCase()}
+                            <c:if test="#{comment.parentComment == null}">
+                                <div class="comment root-comment" style="margin-bottom: 24px; padding: 20px; border-radius: var(--radius-md); border: 1px solid var(--border-color); background: rgba(255,255,255,0.03);">
+                                    <div class="comment-header">
+                                        <div class="comment-avatar">
+                                            #{fn:substring(not empty comment.user.fullName ? comment.user.fullName : comment.user.username, 0, 1).toUpperCase()}
+                                        </div>
+                                        <div>
+                                            <div class="comment-author">#{not empty comment.user.fullName ? comment.user.fullName : comment.user.username}</div>
+                                            <div class="comment-date">#{fn:substring(comment.createdAt, 0, 16)}</div>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <div class="comment-author">#{not empty comment.user.fullName ? comment.user.fullName : comment.user.username}</div>
-                                        <div class="comment-date">#{fn:substring(comment.createdAt, 0, 16)}</div>
-                                    </div>
+                                    <div class="comment-text" style="margin-top: 10px;">#{comment.content}</div>
+
+                                    <c:if test="#{not empty sessionScope.user}">
+                                        <div style="margin-top: 12px;">
+                                            <a href="javascript:void(0)" onclick="toggleReplyForm('#{comment.commentId}')" style="font-size: 0.85rem; color: var(--primary-color); text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 4px;">
+                                                💬 Reply
+                                            </a>
+                                        </div>
+
+                                        <div id="reply-form-#{comment.commentId}" class="reply-form-container" style="display: none; margin-top: 15px; padding-top: 15px; border-top: 1px dashed var(--border-color);">
+                                            <form method="post" action="#{request.contextPath}/comment">
+                                                <input type="hidden" name="action" value="add" />
+                                                <input type="hidden" name="postId" value="#{post.postId}" />
+                                                <input type="hidden" name="parentCommentId" value="#{comment.commentId}" />
+                                                <div class="form-group" style="margin-bottom: 10px;">
+                                                    <textarea name="content" placeholder="Write a reply..." required="required" style="min-height: 80px; padding: 10px; border-radius: var(--radius-sm); font-size: 0.9rem; background: rgba(255,255,255,0.02); color: #fff; width: 100%; border: 1px solid var(--border-color); box-sizing: border-box;"></textarea>
+                                                </div>
+                                                <button type="submit" class="btn btn-sm" style="padding: 6px 16px; font-size: 0.85rem;">Submit Reply</button>
+                                                <button type="button" class="btn btn-outline btn-sm" onclick="toggleReplyForm('#{comment.commentId}')" style="padding: 6px 16px; font-size: 0.85rem; margin-left: 8px;">Cancel</button>
+                                            </form>
+                                        </div>
+                                    </c:if>
                                 </div>
-                                <div class="comment-text">#{comment.content}</div>
-                            </div>
+
+                                <div class="comment-replies" style="margin-left: 45px; margin-top: -12px; margin-bottom: 30px; border-left: 2px solid var(--border-color); padding-left: 20px;">
+                                    <c:forEach var="reply" items="#{comments}">
+                                        <c:if test="#{reply.parentComment != null and reply.parentComment.commentId == comment.commentId}">
+                                            <div class="comment child-comment" style="margin-bottom: 15px; padding: 15px; border-radius: var(--radius-md); border: 1px solid var(--border-color); background: rgba(255,255,255,0.015);">
+                                                <div class="comment-header">
+                                                    <div class="comment-avatar" style="width: 28px; height: 28px; font-size: 0.85rem; line-height: 28px;">
+                                                        #{fn:substring(not empty reply.user.fullName ? reply.user.fullName : reply.user.username, 0, 1).toUpperCase()}
+                                                    </div>
+                                                    <div>
+                                                        <div class="comment-author" style="font-size: 0.9rem;">#{not empty reply.user.fullName ? reply.user.fullName : reply.user.username}</div>
+                                                        <div class="comment-date" style="font-size: 0.75rem;">#{fn:substring(reply.createdAt, 0, 16)}</div>
+                                                    </div>
+                                                </div>
+                                                <div class="comment-text" style="margin-top: 8px; font-size: 0.95rem;">#{reply.content}</div>
+                                            </div>
+                                        </c:if>
+                                    </c:forEach>
+                                </div>
+                            </c:if>
                         </c:forEach>
                     </c:when>
+
                     <c:otherwise>
                         <p style="color: var(--text-muted); text-align: center; padding: 20px 0;">
                             No comments yet. Be the first to start the conversation!
@@ -192,6 +235,15 @@
                     </c:otherwise>
                 </c:choose>
             </div>
+
+            <script>//<![CDATA[
+            function toggleReplyForm(commentId) {
+                const el = document.getElementById('reply-form-' + commentId);
+                if (el) {
+                    el.style.display = el.style.display === 'none' ? 'block' : 'none';
+                }
+            }
+            //]]></script>
         </div>
     </div>
 

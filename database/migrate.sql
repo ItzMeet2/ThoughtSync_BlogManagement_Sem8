@@ -23,6 +23,8 @@ UPDATE posts SET updated_at  = created_at WHERE updated_at IS NULL;
 -- ============================================================
 ALTER TABLE users ADD COLUMN IF NOT EXISTS profile_picture VARCHAR(500);
 ALTER TABLE users ADD COLUMN IF NOT EXISTS bio TEXT;
+ALTER TABLE users ADD COLUMN IF NOT EXISTS reset_token VARCHAR(255);
+ALTER TABLE users ADD COLUMN IF NOT EXISTS token_expiry TIMESTAMP;
 
 -- ============================================================
 -- comments table: add parent_comment_id if missing

@@ -60,6 +60,19 @@ public class UserDAO {
         }
     }
 
+    public User findByResetToken(String resetToken) {
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            return em.createQuery("SELECT u FROM User u WHERE u.resetToken = :resetToken", User.class)
+                    .setParameter("resetToken", resetToken)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        } finally {
+            em.close();
+        }
+    }
+
     public List<User> findAll() {
         EntityManager em = JPAUtil.getEntityManager();
         try {

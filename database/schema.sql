@@ -22,7 +22,9 @@ CREATE TABLE users (
     full_name VARCHAR(100),
     role_id INTEGER REFERENCES roles(role_id),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    is_active BOOLEAN DEFAULT TRUE
+    is_active BOOLEAN DEFAULT TRUE,
+    reset_token VARCHAR(255),
+    token_expiry TIMESTAMP
 );
 
 -- Categories Table

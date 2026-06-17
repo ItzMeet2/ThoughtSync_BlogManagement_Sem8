@@ -137,6 +137,11 @@
                         </select>
                     </div>
 
+                    <div class="form-group" style="margin-top: 25px;">
+                        <label for="tags">Tags (comma separated)</label>
+                        <input type="text" id="tags" name="tags" form="postForm" value="#{tagsString}" placeholder="e.g. tech, coding, java" style="padding: 10px; border-radius: var(--radius-sm);" />
+                    </div>
+
                     <div class="form-group" style="margin-top: 30px;">
                         <label>Featured Image Upload</label>
                         <c:if test="#{not empty post.featuredImage}">

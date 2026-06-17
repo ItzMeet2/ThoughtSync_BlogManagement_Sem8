@@ -40,6 +40,12 @@ public class User {
     @Column(name = "bio", columnDefinition = "TEXT")
     private String bio;
     
+    @Column(name = "reset_token")
+    private String resetToken;
+    
+    @Column(name = "token_expiry")
+    private Timestamp tokenExpiry;
+    
     @OneToMany(mappedBy = "author")
     private Set<Post> posts;
     
@@ -86,4 +92,10 @@ public class User {
     
     public String getBio() { return bio; }
     public void setBio(String bio) { this.bio = bio; }
+    
+    public String getResetToken() { return resetToken; }
+    public void setResetToken(String resetToken) { this.resetToken = resetToken; }
+    
+    public Timestamp getTokenExpiry() { return tokenExpiry; }
+    public void setTokenExpiry(Timestamp tokenExpiry) { this.tokenExpiry = tokenExpiry; }
 }
